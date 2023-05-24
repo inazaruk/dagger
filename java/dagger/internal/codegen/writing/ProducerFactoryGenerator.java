@@ -160,7 +160,7 @@ public final class ProducerFactoryGenerator extends SourceFileGenerator<Producti
             addFieldAndConstructorParameter(
                 factoryBuilder, constructorBuilder, fieldName, bindingField.type());
         fieldsBuilder.put(dependency, field);
-        frameworkFieldAssignments.add(fieldAssignment(field, bindingField.type()));
+        frameworkFieldAssignments.add(fieldAssignment(field, bindingField));
       }
     }
     ImmutableMap<DependencyRequest, FieldSpec> fields = fieldsBuilder.build();
@@ -257,9 +257,10 @@ public final class ProducerFactoryGenerator extends SourceFileGenerator<Producti
     return field;
   }
 
-  private static CodeBlock fieldAssignment(FieldSpec field, ParameterizedTypeName type) {
+  private static CodeBlock fieldAssignment(FieldSpec field, FrameworkField frameworkField) {
     CodeBlock.Builder statement = CodeBlock.builder();
-    if (type != null && type.rawType.equals(TypeNames.PRODUCER)) {
+    if (frameworkField.type() != null
+        && TypeNames.rawTypeName(frameworkField.type()).equals(TypeNames.PRODUCER)) {
       statement.addStatement(
           "this.$1N = $2T.nonCancellationPropagatingViewOf($1N)", field, TypeNames.PRODUCERS);
     } else {

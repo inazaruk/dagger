@@ -69,6 +69,8 @@ public final class TypeNames {
   public static final ClassName MEMBERS_INJECTORS =
       ClassName.get("dagger.internal", "MembersInjectors");
   public static final ClassName PROVIDER = ClassName.get("javax.inject", "Provider");
+  public static final ClassName DAGGER_PROVIDER = ClassName.get("dagger.internal", "Provider");
+  public static final ClassName DAGGER_PROVIDERS = ClassName.get("dagger.internal", "Providers");
   public static final ClassName PROVIDER_OF_LAZY =
       ClassName.get("dagger.internal", "ProviderOfLazy");
   public static final ClassName SCOPE_METADATA = ClassName.get("dagger.internal", "ScopeMetadata");
@@ -215,6 +217,10 @@ public final class TypeNames {
 
   public static ParameterizedTypeName providerOf(TypeName typeName) {
     return ParameterizedTypeName.get(PROVIDER, typeName);
+  }
+
+  public static ParameterizedTypeName daggerProviderOf(TypeName typeName) {
+    return ParameterizedTypeName.get(DAGGER_PROVIDER, typeName);
   }
 
   public static ParameterizedTypeName setOf(TypeName elementType) {

@@ -46,12 +46,12 @@ final class DaggerTestComponent {
 
     @Override
     public Provider<CharSequence> charSequence() {
-      return ((Provider) TestModule_ProvideStringFactory.create());
+      return ((dagger.internal.Provider) TestModule_ProvideStringFactory.create());
     }
 
     @Override
     public Provider<Object> object() {
-      return ((Provider) TestModule_ProvideStringFactory.create());
+      return ((dagger.internal.Provider) TestModule_ProvideStringFactory.create());
     }
   }
 }

@@ -3,10 +3,10 @@ package test;
 import dagger.MembersInjector;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.InjectedFieldSignature;
+import dagger.internal.Provider;
 import dagger.internal.QualifierMetadata;
 import javax.annotation.processing.Generated;
 import javax.inject.Named;
-import javax.inject.Provider;
 
 @QualifierMetadata("javax.inject.Named")
 @DaggerGenerated

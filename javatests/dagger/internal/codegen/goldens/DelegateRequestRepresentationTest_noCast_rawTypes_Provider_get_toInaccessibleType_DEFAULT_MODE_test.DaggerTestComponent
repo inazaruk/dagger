@@ -2,8 +2,8 @@ package test;
 
 import dagger.internal.DaggerGenerated;
 import dagger.internal.DoubleCheck;
+import dagger.internal.Provider;
 import javax.annotation.processing.Generated;
-import javax.inject.Provider;
 import other.Subtype_Factory;
 import other.UsesSupertype;
 import other.UsesSupertype_Factory;

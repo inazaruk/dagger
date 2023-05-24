@@ -96,7 +96,8 @@ public enum FrameworkType {
 
         case PROVIDER_OF_LAZY:
           return Expression.create(
-              from.type().rewrapType(TypeNames.LAZY).wrapType(TypeNames.PROVIDER), codeBlock);
+              from.type().rewrapType(TypeNames.LAZY).wrapType(TypeNames.DAGGER_PROVIDER),
+              codeBlock);
 
         case FUTURE:
           return Expression.create(from.type().rewrapType(TypeNames.LISTENABLE_FUTURE), codeBlock);
@@ -178,7 +179,7 @@ public enum FrameworkType {
   public ClassName frameworkClassName() {
     switch (this) {
       case PROVIDER:
-        return TypeNames.PROVIDER;
+        return TypeNames.DAGGER_PROVIDER;
       case PRODUCER_NODE:
         // TODO(cgdecker): Replace this with new class for representing internal producer nodes.
         // Currently the new class is CancellableProducer, but it may be changed to ProducerNode and

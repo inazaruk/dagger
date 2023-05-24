@@ -18,7 +18,7 @@ package dagger.internal.codegen.javapoet;
 
 import static com.squareup.javapoet.MethodSpec.methodBuilder;
 import static com.squareup.javapoet.TypeSpec.anonymousClassBuilder;
-import static dagger.internal.codegen.javapoet.TypeNames.providerOf;
+import static dagger.internal.codegen.javapoet.TypeNames.daggerProviderOf;
 import static java.util.stream.StreamSupport.stream;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
@@ -87,7 +87,7 @@ public final class CodeBlocks {
     return CodeBlock.of(
         "$L",
         anonymousClassBuilder("")
-            .superclass(providerOf(providedType))
+            .superclass(daggerProviderOf(providedType))
             .addMethod(
                 methodBuilder("get")
                     .addAnnotation(Override.class)

@@ -97,8 +97,9 @@ public final class SourceFiles {
         binding.dependencies(),
         dependency ->
             FrameworkField.create(
-                frameworkTypeMapper.getFrameworkType(dependency.kind()).frameworkClassName(),
-                dependency.key().type().xprocessing().getTypeName(),
+                ParameterizedTypeName.get(
+                    frameworkTypeMapper.getFrameworkType(dependency.kind()).frameworkClassName(),
+                    dependency.key().type().xprocessing().getTypeName()),
                 DependencyVariableNamer.name(dependency)));
   }
 

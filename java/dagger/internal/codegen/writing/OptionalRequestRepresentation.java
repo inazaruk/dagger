@@ -33,6 +33,7 @@ import dagger.internal.codegen.base.OptionalType.OptionalKind;
 import dagger.internal.codegen.binding.ProvisionBinding;
 import dagger.internal.codegen.javapoet.Expression;
 import dagger.internal.codegen.model.DependencyRequest;
+import dagger.internal.codegen.model.RequestKind;
 
 /** A binding expression for optional bindings. */
 final class OptionalRequestRepresentation extends RequestRepresentation {
@@ -79,8 +80,11 @@ final class OptionalRequestRepresentation extends RequestRepresentation {
             .getDependencyExpression(bindingRequest(dependency), requestingClass)
             .codeBlock();
 
-    return isTypeAccessibleFrom(
-            dependency.key().type().xprocessing(), requestingClass.packageName())
+    boolean needsObjectExpression = !isTypeAccessibleFrom(
+        dependency.key().type().xprocessing(), requestingClass.packageName())
+        || (isPreJava8SourceVersion(processingEnv) && dependency.kind() == RequestKind.PROVIDER);
+
+    return !needsObjectExpression
         ? Expression.create(
             binding.key().type().xprocessing(),
             optionalKind.presentExpression(dependencyExpression))

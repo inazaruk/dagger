@@ -4,9 +4,9 @@ import dagger.Lazy;
 import dagger.MembersInjector;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.DoubleCheck;
+import dagger.internal.Provider;
 import dagger.internal.QualifierMetadata;
 import javax.annotation.processing.Generated;
-import javax.inject.Provider;
 
 @QualifierMetadata
 @DaggerGenerated
@@ -60,7 +60,7 @@ public final class MethodInjection_MembersInjector implements MembersInjector<Me
   }
 
   public static void injectManyArgs(Object instance, String string, Lazy<String> lazyString,
-      Provider<String> stringProvider) {
+      javax.inject.Provider<String> stringProvider) {
     ((MethodInjection) instance).manyArgs(string, lazyString, stringProvider);
   }
 }

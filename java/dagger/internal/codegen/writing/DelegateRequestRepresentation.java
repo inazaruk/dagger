@@ -36,7 +36,9 @@ import dagger.internal.codegen.binding.BindingGraph;
 import dagger.internal.codegen.binding.BindsTypeChecker;
 import dagger.internal.codegen.binding.ContributionBinding;
 import dagger.internal.codegen.javapoet.Expression;
+import dagger.internal.codegen.javapoet.TypeNames;
 import dagger.internal.codegen.model.RequestKind;
+import dagger.internal.codegen.xprocessing.XTypes;
 
 /** A {@link dagger.internal.codegen.writing.RequestRepresentation} for {@code @Binds} methods. */
 final class DelegateRequestRepresentation extends RequestRepresentation {
@@ -88,8 +90,14 @@ final class DelegateRequestRepresentation extends RequestRepresentation {
             ? delegateExpression.castTo(contributedType)
             : delegateExpression;
       default:
-        return castToRawTypeIfNecessary(
-            delegateExpression, requestType(requestKind, contributedType, processingEnv));
+        XType requestedType = requestType(requestKind, contributedType, processingEnv);
+        if (XTypes.isTypeOf(requestedType, TypeNames.PROVIDER)) {
+          // Even though the user may have requested a javax Provider, our generated code and
+          // factories only work in the Dagger Provider type, so swap to that one before doing
+          // a cast.
+          requestedType = XTypes.rewrapType(requestedType, TypeNames.DAGGER_PROVIDER);
+        }
+        return castToRawTypeIfNecessary(delegateExpression, requestedType);
     }
   }
 

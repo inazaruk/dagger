@@ -4,9 +4,9 @@ import com.google.common.base.Optional;
 import dagger.Lazy;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Preconditions;
+import dagger.internal.Provider;
 import dagger.internal.ProviderOfLazy;
 import javax.annotation.processing.Generated;
-import javax.inject.Provider;
 import other.DefinitelyNot;
 import other.Maybe;
 import other.Maybe_MaybeModule_ProvideMaybeFactory;
@@ -74,7 +74,7 @@ final class DaggerTestComponent {
     }
 
     @Override
-    public Optional<Provider<Lazy<Maybe>>> providerOfLazyOfMaybe() {
+    public Optional<javax.inject.Provider<Lazy<Maybe>>> providerOfLazyOfMaybe() {
       return Optional.of(ProviderOfLazy.create(provideMaybeProvider));
     }
 
@@ -84,7 +84,7 @@ final class DaggerTestComponent {
     }
 
     @Override
-    public Optional<Provider<Lazy<DefinitelyNot>>> providerOfLazyOfDefinitelyNot() {
+    public Optional<javax.inject.Provider<Lazy<DefinitelyNot>>> providerOfLazyOfDefinitelyNot() {
       return Optional.absent();
     }
 

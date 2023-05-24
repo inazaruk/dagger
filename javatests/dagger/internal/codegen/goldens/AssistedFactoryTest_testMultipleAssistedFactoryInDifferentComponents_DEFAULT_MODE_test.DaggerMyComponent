@@ -1,8 +1,8 @@
 package test;
 
 import dagger.internal.DaggerGenerated;
+import dagger.internal.Provider;
 import javax.annotation.processing.Generated;
-import javax.inject.Provider;
 
 @DaggerGenerated
 @Generated(

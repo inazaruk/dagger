@@ -2,8 +2,8 @@ package test;
 
 import dagger.internal.DaggerGenerated;
 import dagger.internal.InstanceFactory;
+import dagger.internal.Provider;
 import javax.annotation.processing.Generated;
-import javax.inject.Provider;
 
 @DaggerGenerated
 @Generated(
@@ -59,7 +59,7 @@ final class DaggerSimpleComponent {
     }
 
     @Override
-    public Provider<SimpleComponent> selfProvider() {
+    public javax.inject.Provider<SimpleComponent> selfProvider() {
       return simpleComponentProvider;
     }
   }

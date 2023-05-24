@@ -28,8 +28,8 @@ import static dagger.internal.codegen.base.RequestKinds.requestTypeName;
 import static dagger.internal.codegen.javapoet.AnnotationSpecs.Suppression.RAWTYPES;
 import static dagger.internal.codegen.javapoet.AnnotationSpecs.Suppression.UNCHECKED;
 import static dagger.internal.codegen.javapoet.TypeNames.abstractProducerOf;
+import static dagger.internal.codegen.javapoet.TypeNames.daggerProviderOf;
 import static dagger.internal.codegen.javapoet.TypeNames.listenableFutureOf;
-import static dagger.internal.codegen.javapoet.TypeNames.providerOf;
 import static dagger.internal.codegen.writing.ComponentImplementation.FieldSpecKind.ABSENT_OPTIONAL_FIELD;
 import static dagger.internal.codegen.writing.ComponentImplementation.MethodSpecKind.ABSENT_OPTIONAL_METHOD;
 import static dagger.internal.codegen.writing.ComponentImplementation.TypeSpecKind.PRESENT_FACTORY;
@@ -147,15 +147,15 @@ final class OptionalFactories {
                 "absent%sProvider", UPPER_UNDERSCORE.to(UPPER_CAMEL, optionalKind.name())))
         .addModifiers(PRIVATE, STATIC)
         .addTypeVariable(typeVariable)
-        .returns(providerOf(optionalKind.of(typeVariable)))
+        .returns(daggerProviderOf(optionalKind.of(typeVariable)))
         .addJavadoc(
             "Returns a {@link $T} that returns {@code $L}.",
-            TypeNames.PROVIDER,
+            TypeNames.DAGGER_PROVIDER,
             optionalKind.absentValueExpression())
         .addCode("$L // safe covariant cast\n", AnnotationSpecs.suppressWarnings(UNCHECKED))
         .addStatement(
             "$1T provider = ($1T) $2N",
-            providerOf(optionalKind.of(typeVariable)),
+            daggerProviderOf(optionalKind.of(typeVariable)),
             perGeneratedFileCache.absentOptionalProviderFields.computeIfAbsent(
                 optionalKind,
                 kind -> {
@@ -173,7 +173,7 @@ final class OptionalFactories {
    */
   private FieldSpec absentOptionalProviderField(OptionalKind optionalKind) {
     return FieldSpec.builder(
-            TypeNames.PROVIDER,
+            TypeNames.DAGGER_PROVIDER,
             String.format("ABSENT_%s_PROVIDER", optionalKind.name()),
             PRIVATE,
             STATIC,
@@ -182,7 +182,7 @@ final class OptionalFactories {
         .initializer("$T.create($L)", InstanceFactory.class, optionalKind.absentValueExpression())
         .addJavadoc(
             "A {@link $T} that returns {@code $L}.",
-            TypeNames.PROVIDER,
+            TypeNames.DAGGER_PROVIDER,
             optionalKind.absentValueExpression())
         .build();
   }

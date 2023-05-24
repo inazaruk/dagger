@@ -24,7 +24,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
 import static com.squareup.javapoet.MethodSpec.methodBuilder;
 import static com.squareup.javapoet.TypeSpec.classBuilder;
-import static dagger.internal.codegen.javapoet.TypeNames.providerOf;
+import static dagger.internal.codegen.javapoet.TypeNames.daggerProviderOf;
 import static dagger.internal.codegen.writing.ComponentImplementation.TypeSpecKind.COMPONENT_PROVISION_FACTORY;
 import static dagger.internal.codegen.xprocessing.XElements.asMethod;
 import static dagger.internal.codegen.xprocessing.XElements.getSimpleName;
@@ -124,7 +124,7 @@ final class DependencyMethodProviderCreationExpression
     componentShard.addType(
         COMPONENT_PROVISION_FACTORY,
         classBuilder(factoryClassName)
-            .addSuperinterface(providerOf(keyType))
+            .addSuperinterface(daggerProviderOf(keyType))
             .addModifiers(PRIVATE, STATIC, FINAL)
             .addField(dependencyClassName, dependency().variableName(), PRIVATE, FINAL)
             .addMethod(

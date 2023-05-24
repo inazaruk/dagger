@@ -18,8 +18,15 @@ package dagger.internal.codegen.writing;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static dagger.internal.codegen.binding.SourceFiles.generatedClassNameForBinding;
+import static dagger.internal.codegen.extension.DaggerCollectors.onlyElement;
+import static dagger.internal.codegen.model.BindingKind.ASSISTED_FACTORY;
 import static dagger.internal.codegen.model.BindingKind.INJECTION;
+import static dagger.internal.codegen.xprocessing.XElements.getSimpleName;
 
+import androidx.room.compiler.processing.XMethodElement;
+import androidx.room.compiler.processing.XProcessingEnv;
+import androidx.room.compiler.processing.XTypeElement;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import dagger.assisted.Assisted;
 import dagger.assisted.AssistedFactory;
@@ -42,32 +49,56 @@ final class InjectionOrProvisionProviderCreationExpression
   private final ContributionBinding binding;
   private final ShardImplementation shardImplementation;
   private final ComponentRequestRepresentations componentRequestRepresentations;
+  private final XProcessingEnv processingEnv;
 
   @AssistedInject
   InjectionOrProvisionProviderCreationExpression(
       @Assisted ContributionBinding binding,
       ComponentImplementation componentImplementation,
-      ComponentRequestRepresentations componentRequestRepresentations) {
+      ComponentRequestRepresentations componentRequestRepresentations,
+      XProcessingEnv processingEnv) {
     this.binding = checkNotNull(binding);
     this.shardImplementation = componentImplementation.shardImplementation(binding);
     this.componentRequestRepresentations = componentRequestRepresentations;
+    this.processingEnv = processingEnv;
   }
 
   @Override
   public CodeBlock creationExpression() {
+    ClassName factoryImpl = generatedClassNameForBinding(binding);
     CodeBlock createFactory =
         CodeBlock.of(
             "$T.create($L)",
-            generatedClassNameForBinding(binding),
+            factoryImpl,
             componentRequestRepresentations.getCreateMethodArgumentsCodeBlock(
                 binding, shardImplementation.name()));
+
+    // If this is for an AssistedFactory, then we may need to wrap the call in case we're building
+    // against a library built at an older version of Dagger before the changes to make factories
+    // return a Dagger Provider instead of a javax.inject.Provider.
+    if (binding.kind().equals(ASSISTED_FACTORY)) {
+      XTypeElement factoryType = processingEnv.findTypeElement(factoryImpl);
+      // If we can't find the factory, then assume it is being generated this run, which means
+      // it should be the newer version and not need wrapping. If it is missing for some other
+      // reason, then that likely means there will just be some other compilation failure.
+      if (factoryType != null) {
+        XMethodElement createMethod = factoryType.getDeclaredMethods().stream()
+            .filter(method -> method.isStatic() && getSimpleName(method).equals("create"))
+            .collect(onlyElement());
+        // Only convert it if it returns the older javax.inject.Provider type.
+        if (createMethod.getReturnType().getRawType().getTypeName().equals(TypeNames.PROVIDER)) {
+          createFactory = CodeBlock.of(
+              "$T.asDaggerProvider($L)", TypeNames.DAGGER_PROVIDERS, createFactory);
+        }
+      }
+    }
 
     // When scoping a parameterized factory for an @Inject class, Java 7 cannot always infer the
     // type properly, so cast to a raw framework type before scoping.
     if (binding.kind().equals(INJECTION)
         && binding.unresolved().isPresent()
         && binding.scope().isPresent()) {
-      return CodeBlocks.cast(createFactory, TypeNames.PROVIDER);
+      return CodeBlocks.cast(createFactory, TypeNames.DAGGER_PROVIDER);
     } else {
       return createFactory;
     }

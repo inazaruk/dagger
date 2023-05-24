@@ -4,10 +4,10 @@ import dagger.Lazy;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.DoubleCheck;
 import dagger.internal.Factory;
+import dagger.internal.Provider;
 import dagger.internal.QualifierMetadata;
 import dagger.internal.ScopeMetadata;
 import javax.annotation.processing.Generated;
-import javax.inject.Provider;
 
 @ScopeMetadata
 @QualifierMetadata("test.QualifierA")
@@ -89,9 +89,9 @@ public final class GenericClass_Factory<A, B> implements Factory<GenericClass<A,
     return new GenericClass_Factory<A, B>(aProvider, a2Provider, paProvider, qaProvider, laProvider, sProvider, s2Provider, psProvider, qsProvider, lsProvider, bProvider, b2Provider, pbProvider, qbProvider, lbProvider);
   }
 
-  public static <A, B> GenericClass<A, B> newInstance(A a, A a2, Provider<A> pa, A qa, Lazy<A> la,
-      String s, String s2, Provider<String> ps, String qs, Lazy<String> ls, B b, B b2,
-      Provider<B> pb, B qb, Lazy<B> lb) {
+  public static <A, B> GenericClass<A, B> newInstance(A a, A a2, javax.inject.Provider<A> pa, A qa,
+      Lazy<A> la, String s, String s2, javax.inject.Provider<String> ps, String qs, Lazy<String> ls,
+      B b, B b2, javax.inject.Provider<B> pb, B qb, Lazy<B> lb) {
     return new GenericClass<A, B>(a, a2, pa, qa, la, s, s2, ps, qs, ls, b, b2, pb, qb, lb);
   }
 }

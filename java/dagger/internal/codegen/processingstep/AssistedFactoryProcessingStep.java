@@ -23,7 +23,7 @@ import static dagger.internal.codegen.binding.SourceFiles.generatedClassNameForB
 import static dagger.internal.codegen.extension.DaggerStreams.toImmutableList;
 import static dagger.internal.codegen.javapoet.CodeBlocks.toParametersCodeBlock;
 import static dagger.internal.codegen.javapoet.TypeNames.INSTANCE_FACTORY;
-import static dagger.internal.codegen.javapoet.TypeNames.providerOf;
+import static dagger.internal.codegen.javapoet.TypeNames.daggerProviderOf;
 import static dagger.internal.codegen.langmodel.Accessibility.accessibleTypeName;
 import static dagger.internal.codegen.xprocessing.MethodSpecs.overriding;
 import static dagger.internal.codegen.xprocessing.XElements.asTypeElement;
@@ -319,7 +319,7 @@ final class AssistedFactoryProcessingStep extends TypeCheckingProcessingStep<XTy
                   .addModifiers(PUBLIC, STATIC)
                   .addParameter(delegateFactoryParam)
                   .addTypeVariables(typeVariableNames(metadata.assistedInjectElement()))
-                  .returns(providerOf(factory.getType().getTypeName()))
+                  .returns(daggerProviderOf(factory.getType().getTypeName()))
                   .addStatement(
                       "return $T.$Lcreate(new $T($N))",
                       INSTANCE_FACTORY,

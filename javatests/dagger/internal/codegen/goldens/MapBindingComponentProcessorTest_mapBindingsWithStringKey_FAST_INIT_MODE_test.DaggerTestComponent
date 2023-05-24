@@ -3,9 +3,9 @@ package test;
 import com.google.common.collect.ImmutableMap;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Preconditions;
+import dagger.internal.Provider;
 import java.util.Map;
 import javax.annotation.processing.Generated;
-import javax.inject.Provider;
 
 @DaggerGenerated
 @Generated(
@@ -70,7 +70,7 @@ final class DaggerTestComponent {
 
     private Provider<Handler> provideLoginHandlerProvider;
 
-    private Provider<Map<String, Provider<Handler>>> mapOfStringAndProviderOfHandlerProvider;
+    private Provider mapOfStringAndProviderOfHandlerProvider;
 
     private TestComponentImpl(MapModuleOne mapModuleOneParam, MapModuleTwo mapModuleTwoParam) {
       this.mapModuleOne = mapModuleOneParam;
@@ -88,7 +88,7 @@ final class DaggerTestComponent {
     }
 
     @Override
-    public Provider<Map<String, Provider<Handler>>> dispatcher() {
+    public javax.inject.Provider<Map<String, javax.inject.Provider<Handler>>> dispatcher() {
       return mapOfStringAndProviderOfHandlerProvider;
     }
 
@@ -107,7 +107,7 @@ final class DaggerTestComponent {
       public T get() {
         switch (id) {
           case 0: // java.util.Map<java.lang.String,javax.inject.Provider<test.Handler>> 
-          return (T) ImmutableMap.<String, Provider<Handler>>of("Admin", testComponentImpl.provideAdminHandlerProvider, "Login", testComponentImpl.provideLoginHandlerProvider);
+          return (T) ImmutableMap.<String, javax.inject.Provider<Handler>>of("Admin", testComponentImpl.provideAdminHandlerProvider, "Login", testComponentImpl.provideLoginHandlerProvider);
 
           case 1: // java.util.Map<java.lang.String,javax.inject.Provider<test.Handler>> test.MapModuleOne#provideAdminHandler 
           return (T) MapModuleOne_ProvideAdminHandlerFactory.provideAdminHandler(testComponentImpl.mapModuleOne);

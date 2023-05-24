@@ -27,13 +27,17 @@ import static dagger.internal.codegen.langmodel.Accessibility.isRawTypeAccessibl
 import static dagger.internal.codegen.langmodel.Accessibility.isTypeAccessibleFrom;
 import static dagger.internal.codegen.xprocessing.MethodSpecs.overriding;
 import static dagger.internal.codegen.xprocessing.XElements.getSimpleName;
+import static dagger.internal.codegen.xprocessing.XProcessingEnvs.isPreJava8SourceVersion;
 
 import androidx.room.compiler.processing.XMethodElement;
+import androidx.room.compiler.processing.XProcessingEnv;
 import androidx.room.compiler.processing.XType;
 import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
+import dagger.internal.codegen.base.MapType;
+import dagger.internal.codegen.base.OptionalType;
 import dagger.internal.codegen.binding.Binding;
 import dagger.internal.codegen.binding.BindingGraph;
 import dagger.internal.codegen.binding.BindingRequest;
@@ -69,6 +73,7 @@ public final class ComponentRequestRepresentations {
   private final ProvisionBindingRepresentation.Factory provisionBindingRepresentationFactory;
   private final ProductionBindingRepresentation.Factory productionBindingRepresentationFactory;
   private final Map<Binding, BindingRepresentation> representations = new HashMap<>();
+  private final XProcessingEnv processingEnv;
 
   @Inject
   ComponentRequestRepresentations(
@@ -78,7 +83,8 @@ public final class ComponentRequestRepresentations {
       ComponentRequirementExpressions componentRequirementExpressions,
       MembersInjectionBindingRepresentation.Factory membersInjectionBindingRepresentationFactory,
       ProvisionBindingRepresentation.Factory provisionBindingRepresentationFactory,
-      ProductionBindingRepresentation.Factory productionBindingRepresentationFactory) {
+      ProductionBindingRepresentation.Factory productionBindingRepresentationFactory,
+      XProcessingEnv processingEnv) {
     this.parent = parent;
     this.graph = graph;
     this.componentImplementation = componentImplementation;
@@ -87,6 +93,7 @@ public final class ComponentRequestRepresentations {
     this.provisionBindingRepresentationFactory = provisionBindingRepresentationFactory;
     this.productionBindingRepresentationFactory = productionBindingRepresentationFactory;
     this.componentRequirementExpressions = checkNotNull(componentRequirementExpressions);
+    this.processingEnv = processingEnv;
   }
 
   /**
@@ -232,6 +239,15 @@ public final class ComponentRequestRepresentations {
         componentMethod.methodElement()
             .asMemberOf(componentImplementation.graph().componentTypeElement().getType())
             .getReturnType();
+
+    // When compiling with -source 7, javac's type inference isn't strong enough to match things
+    // like Optional<javax.inject.Provider<T>> to Optional<dagger.internal.Provider<T>>.
+    if (isPreJava8SourceVersion(processingEnv)
+        && (MapType.isMapOfProvider(returnType)
+            || OptionalType.isOptionalProviderType(returnType))) {
+      return expression.castTo(returnType.getRawType());
+    }
+
     return !isVoid(returnType) && !expression.type().isAssignableTo(returnType)
         ? expression.castTo(returnType)
         : expression;
