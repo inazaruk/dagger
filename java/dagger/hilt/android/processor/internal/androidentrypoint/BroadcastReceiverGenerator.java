@@ -29,11 +29,7 @@ import androidx.room.compiler.processing.XType;
 import androidx.room.compiler.processing.XTypeElement;
 import androidx.room.compiler.processing.XTypeParameterElement;
 import com.google.common.collect.ImmutableSet;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterSpec;
-import com.squareup.javapoet.TypeSpec;
+import com.squareup.javapoet.*;
 import dagger.hilt.android.processor.internal.AndroidClassNames;
 import dagger.hilt.processor.internal.ClassNames;
 import dagger.hilt.processor.internal.Processors;
@@ -73,6 +69,15 @@ public final class BroadcastReceiverGenerator {
     // onReceive call is implemented in any of the super classes.
     if (metadata.requiresBytecodeInjection() && !isOnReceiveImplemented(metadata.baseElement())) {
       builder.addAnnotation(ClassNames.ON_RECEIVE_BYTECODE_INJECTION_MARKER);
+
+      builder.addField(
+          FieldSpec.builder(
+                  TypeName.BOOLEAN,
+                  "onReceiveBytecodeInjectionMarker",
+                  Modifier.PRIVATE,
+                  Modifier.FINAL)
+          .initializer("false")
+          .build());
     }
 
     JavaPoetExtKt.addOriginatingElement(builder, metadata.element());
