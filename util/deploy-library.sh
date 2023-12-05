@@ -104,13 +104,13 @@ add_tracking_version() {
 validate_jar() {
   local library=$1
   if [[ $library == */gwt/libgwt.jar ]]; then
-     python $(dirname $0)/validate-jar-entry-prefixes.py \
+     python3 $(dirname $0)/validate-jar-entry-prefixes.py \
         $library "dagger/,META-INF/,javax/inject/"
   elif [[ $library == */java/dagger/hilt/android/artifact.aar ]]; then
-     python $(dirname $0)/validate-jar-entry-prefixes.py \
+     python3 $(dirname $0)/validate-jar-entry-prefixes.py \
         $library "dagger/,META-INF/,hilt_aggregated_deps/"
   else
-     python $(dirname $0)/validate-jar-entry-prefixes.py \
+     python3 $(dirname $0)/validate-jar-entry-prefixes.py \
         $library "dagger/,META-INF/"
   fi
 }
@@ -136,7 +136,7 @@ find_pom_value() {
   local attribute=$2
   # Using Python here because `mvn help:evaluate` doesn't work with our gen pom
   # files since they don't include the aar packaging plugin.
-  python $(dirname $0)/find_pom_value.py $pomfile $attribute
+  python3 $(dirname $0)/find_pom_value.py $pomfile $attribute
 }
 
 deploy_library "$@"
